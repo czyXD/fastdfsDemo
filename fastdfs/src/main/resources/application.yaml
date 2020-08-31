@@ -1,8 +1,9 @@
 spring:
+  profiles:
+    active: dev
   servlet:
-    http:
-      multipart:
-        max-file-size:
-          10MB
-        max-request-size:
-          10MB
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+server:
+  port: 8002
