@@ -24,6 +24,7 @@ public class FileInformation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY )
     long id;
+    String uploadName;
     String fileName;
     @CreatedBy
     int ownerId;
@@ -32,4 +33,12 @@ public class FileInformation {
     Date createTime;
     Date deleteTime;
     int status;
+
+    public FileInformation() {
+    }
+
+    public FileInformation(String uploadName, int status) {
+        this.uploadName = uploadName;
+        this.status = status;
+    }
 }

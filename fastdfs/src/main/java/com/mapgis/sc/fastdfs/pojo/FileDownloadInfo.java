@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Table
 @Getter
 @Setter
-public class FileUploadInfo {
+public class FileDownloadInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     int id;
@@ -18,11 +18,12 @@ public class FileUploadInfo {
     String filename;
     String md5;
     int pos;
+    int status;
 
-    public FileUploadInfo() {
+    public FileDownloadInfo() {
     }
 
-    public FileUploadInfo(String uploadName,String filename, String md5, int pos) {
+    public FileDownloadInfo(String uploadName, String filename, String md5, int pos) {
         this.filename = filename;
         this.md5 = md5;
         this.pos = pos;

@@ -31,6 +31,20 @@ public class FastDFSCliet {
             logger.error("FastDFS Client Init Fail!",e);
         }
     }
+    public static String[] uploadAppenderBystream(String groupName,byte[] buff,int pos,int size,String ext,NameValuePair[] nameValuePair){
+        String[] uploadReults;
+        StorageClient storageClient;
+        try {
+            storageClient = getTrackerClient();
+            uploadReults = storageClient.upload_appender_file(groupName,buff,pos,size,ext,nameValuePair);
+            return uploadReults;
+        } catch (IOException e) {
+            logger.error("get storageclien fail",e);
+        } catch (MyException e) {
+            logger.error("upload append file fail",e);
+        }
+        return null;
+    }
     public static String[] uploadAppender(FastDFSFile file){
 
         NameValuePair[] meta_list = new NameValuePair[1];
@@ -68,7 +82,7 @@ public class FastDFSCliet {
             byte[] appendFile = file.getContent();
 //            byte[] buffer = new byte[appendFile.length];
             //以修改的方式解决这一问题，追加可能会出现重复追加的情况
-            storageClient.append_file("group0",file.getName(),appendFile,0,appendFile.length);
+            storageClient.append_file("group1",file.getName(),appendFile,0,appendFile.length);
 //            resultCode = storageClient.modify_file("group0",file.getName(),file.getPos(),appendFile,0,appendFile.length);
             long endtime = System.currentTimeMillis() - startTime;
             if (resultCode == 0 ){
@@ -82,6 +96,38 @@ public class FastDFSCliet {
 
 
         return resultCode;
+    }
+    public static void modifyFile(String groupName,String fileName,int pos,byte[] appendfile,int size){
+        StorageClient storageClient = null;
+        int resultCode = 0;
+        try {
+            storageClient = getTrackerClient();
+            resultCode = storageClient.modify_file("group1",fileName,pos,appendfile,0,size);
+            logger.info("modify file success!:"+ fileName );
+        } catch (IOException e) {
+            logger.error("IO Exception when uploading the chunkfile:" + fileName,e);
+        } catch (MyException e) {
+            logger.error("Exception when upload then chunkfile by modify:" + fileName,e);
+        }
+    }
+    public static int appendFile(String groupName,String fileName,byte[] appendfile,int size){
+        long startTime = System.currentTimeMillis();
+        StorageClient storageClient = null;
+        int resultCode = 0;
+        try {
+            storageClient = getTrackerClient();
+            resultCode = storageClient.append_file("group1",fileName,appendfile,0,size);
+            long endtime = System.currentTimeMillis() - startTime;
+            logger.info("upload chunk file success!:"+ fileName + "time:" + endtime);
+            return resultCode;
+        } catch (IOException e) {
+            logger.error("IO Exception when uploading the chunkfile:" + fileName,e);
+        } catch (MyException e) {
+            logger.error("Exception when upload then chunkfile by modify:" + fileName,e);
+        }
+
+
+        return 0;
     }
     public static String[] upload(FastDFSFile file){
         logger.info("File Name: " + file.getName() + "File Length:" + file.getContent().length);
@@ -132,6 +178,17 @@ public class FastDFSCliet {
             logger.error("IO Exception: Get File from Fast DFS failed", e);
         } catch (Exception e) {
             logger.error("Non IO Exception: Get File from Fast DFS failed", e);
+        }
+        return null;
+    }
+    public static byte[] downFile(String groupName,String remoteFileName,int offset,long byteSize){
+        try {
+            StorageClient storageClient = getTrackerClient();
+            return storageClient.download_file(groupName, remoteFileName,offset,byteSize);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (MyException e) {
+            e.printStackTrace();
         }
         return null;
     }
